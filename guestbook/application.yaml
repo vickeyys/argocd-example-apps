@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook         # name of the application inside ArgoCD
+  namespace: argocd       # must be in argocd namespace
+spec:
+  project: default        # ArgoCD project (use 'default' unless you created custom ones)
+  source:
+    repoURL: https://github.com/vickeyys/argocd-example-apps.git  # Git repo
+    targetRevision: HEAD  # Git branch, tag, or commit
+    path: guestbook       # Path inside repo where manifests live
+  destination:
+    server: https://kubernetes.default.svc  # points to the current cluster
+    namespace: dev   # namespace where app will be deployed
+  syncPolicy:
+    automated:            # enable auto-sync
+      prune: true         # remove resources if they are deleted from Git
+      selfHeal: true      # correct drift if someone kubectl-edits resources
